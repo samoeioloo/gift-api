@@ -21,11 +21,20 @@ namespace Gift.Controllers
         
          [HttpGet]
          [Route("{userId}/eras")]
+         [ProducesResponseType(StatusCodes.Status200OK)]
+         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+         [ProducesResponseType(StatusCodes.Status404NotFound)]
+         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-         public async Task<ActionResult<List<Era>>> GetErasForUser(int userId)
+        public async Task<ActionResult<List<Era>>> GetErasForUser([FromBody] int userId)
          {
-             var result = await _userService.GetErasForUser(userId);
-             return Ok(result.Select(s => _mapper.Map<Era>(s)));
+            var response = await _userService.GetErasForUser(userId);
+            if(response != null)
+                return Ok(response.Select(_mapper.Map<Era>));
+            else
+            {
+                return NotFound("No eras found for this user. Create one.");
+            }
          }
 
          /**[HttpGet]
