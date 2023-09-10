@@ -5,19 +5,19 @@ namespace Gift.Services.UserService;
 
 public class UserService : IUserService
 {
-/**private static List<User> heroes = new () { new() { Id = 1, Name = "Hero1" }, new() {Id = 2, Name = "Hero2"}};
+
     private DataContext _context { get; set; }
 
     public UserService(DataContext context)
     {
         _context = context;
     }
-    public async Task<List<User>> GetAllHeroes()
+    public async Task<List<Era>> GetErasForUser(int userId)
     {
-        return await _context.Heroes.ToListAsync();
+        return await _context.Eras.ToListAsync();
     }
 
-    public User GetAHero(int id)
+    /**public User GetAHero(int id)
     {
         var hero = heroes.Find(x => x.Id == id);
         if (hero == null)

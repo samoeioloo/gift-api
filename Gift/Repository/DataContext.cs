@@ -18,7 +18,7 @@ public class DataContext : DbContext
         optionsBuilder.UseSqlServer(configuration.GetConnectionString("GiftDB"));
     }
 
-    // declare tables used in context
+    // declare tables used in context`
     public DbSet<User> Users { get; set; } 
     public DbSet<Era> Eras { get; set; } 
     public DbSet<Models.Gift> Gifts { get; set; } 

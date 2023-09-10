@@ -5,54 +5,57 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Gift.Controllers
 {
-    /**[Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]/")]
+    [ApiVersion("1.0")]
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
         
-        public IUserService _heroService; 
-        public UserController(IUserService heroService, IMapper mapper)
+        public IUserService _userService; 
+        public UserController(IUserService userService, IMapper mapper)
         {
-            _heroService = heroService;
+            _userService = userService;
             _mapper = mapper;
         }
         
          [HttpGet]
-         public async Task<ActionResult<List<User>>> GetAllHeroes()
+         [Route("{userId}/eras")]
+
+         public async Task<ActionResult<List<Era>>> GetErasForUser(int userId)
          {
-             var result = await _heroService.GetAllHeroes();
-             return Ok(result.Select(s => _mapper.Map<HeroDto>(s)));
+             var result = await _userService.GetErasForUser(userId);
+             return Ok(result.Select(s => _mapper.Map<Era>(s)));
          }
 
-         [HttpGet]
+         /**[HttpGet]
          [Route("{id}")]
          public async Task<ActionResult<List<User>>> GetAHero(int id)
          {
-             return Ok(_heroService.GetAHero(id));
+             return Ok(_userService.GetAHero(id));
          }
 
          [HttpPost]
          public async Task<ActionResult<List<User>>> AddHero([FromBody]User h)
          {
              
-             return Ok(_heroService.AddHero(h));
+             return Ok(_userService.AddHero(h));
          }
          [HttpDelete]
          [Route("{id}")]
          public async Task<ActionResult<List<User>>> RemoveHero(int id)
          {
              
-             return Ok(_heroService.RemoveHero(id));
+             return Ok(_userService.RemoveHero(id));
          }
 
          [HttpPatch]
          [Route("{id}")]
          public async Task<ActionResult<User>> UpdateHero(int id, User request)
          {
-             return Ok(_heroService.UpdateHero(request));
-         }
+             return Ok(_userService.UpdateHero(request));
+         }*/
          
-    }*/
+    }
 }
 
