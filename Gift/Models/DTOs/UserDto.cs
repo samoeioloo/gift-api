@@ -1,9 +1,3 @@
 namespace Gift.Models.DTOs;
-/**
- * To avoid exposing db entities to client and to shape the data
- * we want them to receive, use Dtos 
- */
-public class UserDto
-{
-    public string Name { get; set; } = string.Empty;
-}
+
+public record UserDto(Guid Id, string Username, string Password, string Email, IEnumerable<Era> Eras);

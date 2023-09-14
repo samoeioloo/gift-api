@@ -1,12 +1,13 @@
-using Gift.Models;
+using Gift.Models.Requests;
+using Gift.Models.Responses;
 
 namespace Gift.Services.UserService;
 
 public interface IUserService
 {
-    Task<List<Era>> GetErasForUser(int userId);
-    /**User GetAHero(int id);
-    List<User> AddHero(User h);
-    List<User> RemoveHero(int id);
-    List<User> UpdateHero(User request);*/
+	Task<Guid?> AddUser(UserSignupRequest request);
+	Task<AuthenticateResponse> AuthenticateUser(AuthenticateRequest request);
+
+	Task<List<Era>> GetErasForUser(int? userId);
+	/**Task<User?> GetCurrentUser(int? id);*/
 }

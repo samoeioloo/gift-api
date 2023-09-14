@@ -37,10 +37,15 @@ namespace Gift.Migrations
                     b.Property<int>("User")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("Year")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Eras");
                 });
@@ -84,18 +89,16 @@ namespace Gift.Migrations
 
             modelBuilder.Entity("Gift.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -103,21 +106,19 @@ namespace Gift.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Gift.Models.User", b =>
+            modelBuilder.Entity("Gift.Models.Era", b =>
                 {
                     b.HasOne("Gift.Models.User", null)
-                        .WithMany("Homies")
+                        .WithMany("Eras")
                         .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Gift.Models.User", b =>
                 {
-                    b.Navigation("Homies");
+                    b.Navigation("Eras");
                 });
 #pragma warning restore 612, 618
         }

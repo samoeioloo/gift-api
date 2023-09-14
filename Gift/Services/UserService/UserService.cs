@@ -1,5 +1,8 @@
 using Gift.Models;
+using Gift.Models.Requests;
+using Gift.Models.Responses;
 using Gift.Repository;
+using Gift.Utils;
 
 namespace Gift.Services.UserService;
 
@@ -7,47 +10,57 @@ public class UserService : IUserService
 {
 
     private DataContext _context { get; set; }
+	private readonly IJwtUtils _jwt;
 
-    public UserService(DataContext context)
+	public UserService(DataContext context, IJwtUtils jwt)
     {
         _context = context;
-    }
-    public async Task<List<Era>> GetErasForUser(int userId)
-    {
-        return await _context.Eras.ToListAsync();
-    }
+		_jwt=jwt;
+	}
 
-    /**public User GetAHero(int id)
+    public async Task<Guid?> AddUser(UserSignupRequest request)
     {
-        var hero = heroes.Find(x => x.Id == id);
-        if (hero == null)
+        if (!IsValidUsername(request.Username) || !IsValidEmail(request.Email))
             return null;
-        return hero;
+
+		User user = new() { UserName = request.Username, Password = EncryptPassword(request.Password), CreatedAt = DateTime.Now };
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+
+        return user.Id;
+    }
+	public async Task<AuthenticateResponse?> AuthenticateUser(AuthenticateRequest request)
+    {
+        try
+        {
+			var user = _context.Users.SingleOrDefault(x => x.UserName == request.Username && x.Password == Decrypti(request.Password));
+
+			// return null if user not found
+			if (user == null) return null;
+
+			// authentication successful so generate jwt token
+			var token = _jwt.GenerateJwtToken(user);
+
+			return new AuthenticateResponse(user, token);
+		}
+        catch (Exception e) { throw e; }
+        
+	}
+
+    public async Task<List<Era>> GetErasForUser(int? userId)
+    {
+        return await _context.Eras.Where(o=>o.User == userId).ToListAsync();
     }
 
-    public List<User> AddHero(User h)
-    {
-        heroes.Add(h);
-        //_context.Add(hero)
-        // await _context.SaveChangesAsync()
-        return heroes;
-    }
+	private bool IsValidUsername(string username) =>  username.Length > 0;
+	private bool IsValidEmail(string email) =>  email.Length > 0;
 
-    public List<User> RemoveHero(int id)
+    private string EncryptPassword(string password) => $"Encrypted{password}";
+    private bool VerifyPassword(Guid id, string requestPassword) => true;
+    private string Decrypti(string requestPassword) => $"Encrypted{requestPassword}";
+	/**
+        public Task<User?> GetCurrentUser(int? id)
     {
-        heroes.RemoveAt(id);
-        //_context.Remove(hero)
-        // await _context.SaveChangesAsync()
-        return heroes;
-    }
-
-    public List<User> UpdateHero(User request)
-    {
-        var heroToUpdate = heroes.Find(p => p.Id == request.Id);
-        if (heroToUpdate is null)
-            return null;
-        heroToUpdate.Name = request.Name;
-        return heroes;
-        // await _context.SaveChangesAsync()
+        return _context.Users.FirstOrDefaultAsync(o => o.UserName == UserName;
     }*/
 }

@@ -1,12 +1,17 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Gift.Models
 {
     [PrimaryKey(nameof(Id))]
     public class User
     {
-        private int Id { get; set; }
-        public string UserName { get; private set; } = string.Empty;
-		public string Password { get; private set; } = string.Empty;
-		public List<User> Homies { get; private set; }
-        
-    }
+		
+		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+		public Guid Id { get; private set; }
+
+        public string UserName { get; set; } = string.Empty;
+		public string Password { get; set; } = string.Empty;
+        public IEnumerable<Era> Eras { get; set; }
+        public DateTime CreatedAt { get; set; }
+	}
 }
